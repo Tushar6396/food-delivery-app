@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-function Login() {
+function Signup() {
   const [credentials, setCredentials] = useState({
+    name: '',
     email: '',
     password: '',
+    geolocation: '',
   });
-
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/login', {
+    const response = await fetch('http://localhost:5000/api/createuser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        name: credentials.name,
         email: credentials.email,
         password: credentials.password,
+        location: credentials.geolocation,
       }),
     });
 
@@ -28,17 +30,29 @@ function Login() {
     if (!content.success) {
       alert('Some error occured');
     } else {
-      navigate('/');
+      alert('User created successfully');
     }
   };
 
   const handleChange = (e) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
+
   return (
     <>
       <div className='container p-5'>
         <form onSubmit={handleSubmit}>
+          <div className='form-group'>
+            <label htmlFor='name'>Name</label>
+            <input
+              type='text'
+              className='form-control'
+              placeholder='Enter name'
+              name='name'
+              value={credentials.name}
+              onChange={handleChange}
+            />
+          </div>
           <div className='form-group'>
             <label htmlFor='exampleInputEmail1'>Email address</label>
             <input
@@ -67,11 +81,22 @@ function Login() {
               onChange={handleChange}
             />
           </div>
+          <div className='form-group'>
+            <label htmlFor='address'>Address</label>
+            <input
+              type='text'
+              className='form-control'
+              placeholder='Enter your Address'
+              name='geolocation'
+              value={credentials.geolocation}
+              onChange={handleChange}
+            />
+          </div>
           <button type='submit' className=' btn btn-success'>
             Submit
           </button>
-          <Link to='/createuser' className='m-3 btn btn-danger'>
-            New user?
+          <Link to='/login' className='m-3 btn btn-danger'>
+            Already a User
           </Link>
         </form>
       </div>
@@ -79,4 +104,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;

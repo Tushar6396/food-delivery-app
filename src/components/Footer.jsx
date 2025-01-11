@@ -12,7 +12,7 @@ function Footer() {
             </Link>
           </li>
           <li className='nav-item'>
-            <Link to='/login' class='nav-link px-2 text-body-secondary'>
+            <Link to='/login' className='nav-link px-2 text-body-secondary'>
               Login
             </Link>
           </li>
