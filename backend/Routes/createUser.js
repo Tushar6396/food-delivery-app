@@ -2,7 +2,10 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const router = express.Router();
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
+const jwtSecret = process.env.JWT_SECRET;
 router.post(
   '/createuser',
   [
@@ -23,8 +26,12 @@ router.post(
     }
 
     const { name, email, password, location } = req.body;
+
     try {
       // verify for existing user
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password, salt);
+
       let existingUser = await User.findOne({ email });
       if (existingUser) {
         return res
@@ -36,7 +43,7 @@ router.post(
       let user = new User({
         name,
         email,
-        password,
+        password: hashedPassword,
         location,
       });
       await user.save();
@@ -77,14 +84,26 @@ router.post(
           .json({ msg: 'Invalid credentials', success: false });
       }
 
+      const comparePassword = await bcrypt.compare(password, user.password);
+
       // match password
-      if (password !== user.password) {
+      if (!comparePassword) {
         return res
           .status(400)
           .json({ msg: 'Invalid credentials', success: false });
       }
 
-      res.status(200).json({ msg: 'User logged in', success: true }); // temporary
+      const payload = {
+        user: {
+          id: user.id,
+        },
+      };
+
+      const authToken = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+
+      res
+        .status(200)
+        .json({ msg: 'User logged in', success: true, authToken: authToken }); // temporary
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server Error');

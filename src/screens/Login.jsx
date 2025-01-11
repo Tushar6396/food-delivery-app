@@ -28,6 +28,8 @@ function Login() {
     if (!content.success) {
       alert('Some error occured');
     } else {
+      localStorage.setItem('token', content.authToken);
+      console.log(localStorage.getItem('token'));
       navigate('/');
     }
   };
