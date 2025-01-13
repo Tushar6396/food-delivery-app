@@ -3,14 +3,11 @@ import React from 'react';
 function Card(props) {
   let options = props.options[0];
   let optionsPrice = Object.keys(options);
-  const defaultImg =
-    'https://images.unsplash.com/photo-1664990035720-faac522df41f?q=80&w=1780&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
-  let imgUrl = props.imgSrc || defaultImg;
-  console.log(props.imgSrc);
+
   return (
     <div className='card mt-3' style={{ width: '18rem', maxHeight: '360px' }}>
       <img
-        src={imgUrl}
+        src={props.imgSrc}
         className='card-img-top'
         alt='...'
         style={{ height: '120px', objectFit: 'fill' }}

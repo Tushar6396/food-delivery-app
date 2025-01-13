@@ -31,6 +31,7 @@ function Login() {
       localStorage.setItem('token', content.authToken);
       console.log(localStorage.getItem('token'));
       navigate('/');
+      window.location.reload();
     }
   };
 
